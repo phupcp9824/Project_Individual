@@ -7,6 +7,8 @@ builder.Services.AddDbContext<OrderDbContext>();
 builder.Services.AddScoped<IRepCategory, RepCategory>();
 builder.Services.AddScoped<IRepSize, RepSize>();
 builder.Services.AddScoped<IRepProduct, RepProduct>();
+builder.Services.AddScoped<IRepUser, RepUser>();
+
 
 var app = builder.Build();
 
