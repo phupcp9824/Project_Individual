@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Customer/_Layout.cshtml";
+}
+<style>
+    .position-relative {
+        position: relative;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 50%;
+        right: 20px; /* Điều chỉnh khoảng cách từ bên phải */
+        transform: translateY(-50%); /* Giúp căn giữa theo chiều dọc */
+        color: black; /* Màu chữ */
+        text-align: right; /* Căn phải */
+        z-index: 1; /* Đảm bảo nội dung nằm trên hình ảnh */
+    }
+
+</style>
+
+<div class="container-fluid fill_height position-relative">
+    <div class="row align-items-center fill_height">
+        <img src="@Url.Content("~/image/Screenshot 2024-10-31 164240.png")" alt="Alternate Text" class="img-fluid" />
+        <div class="overlay-content">
+            <h4>Spring Collection 2025</h4>
+            <h1>Get up to 35% Off New Arrivals</h1>
+        </div>
+    </div>
+</div>
+
