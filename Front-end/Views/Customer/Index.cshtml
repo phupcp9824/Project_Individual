@@ -17,6 +17,15 @@
         z-index: 1; /* Đảm bảo nội dung nằm trên hình ảnh */
     }
 
+    .Patter_shirt h3{
+        color:chocolate;
+        font-size: 20px;
+    }
+
+    .Pstter_trouser h3{
+        color: chocolate;
+        font-size: 20px;
+    }
 </style>
 
 <div class="container-fluid fill_height position-relative">
@@ -25,6 +34,70 @@
         <div class="overlay-content">
             <h4>Spring Collection 2025</h4>
             <h1>Get up to 35% Off New Arrivals</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="Patter_shirt text-center">
+            <h3>Các mẫu áo bán chạy</h3>
+            <div class="row">
+                <div class="row">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <img src="@item.Picture" alt="@item.Name" width="60px" height="250px" class="combo-image card-img-top" />
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.Name</h5>
+                                        <p class="card-text" style="color:coral">
+                                            @item.Price VND
+                                            <a asp-controller="OrderDetail" asp-action="AddtoCart" asp-route-id="@item.Id" class="btn btn-primary float-right">
+                                                <i class="bi bi-cart-plus"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No combos available at the moment.</p>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="Pstter_trouser text-center">
+            <h3>Các mẫu quần bán chạy</h3>
+               <div class="row">
+                <div class="row">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <img src="@item.Picture" alt="@item.Name" width="60px" height="250px" class="combo-image card-img-top" />
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.Name</h5>
+                                        <p class="card-text" style="color:coral">
+                                            @item.Price VND
+                                        <a asp-controller="OrderDetail" asp-action="AddtoCart" asp-route-id="@item.Id" class="btn btn-primary float-right">
+                                            <i class="bi bi-cart-plus"></i>
+                                        </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No combos available at the moment.</p>
+                    }
+                </div>
+        </div>
         </div>
     </div>
 </div>

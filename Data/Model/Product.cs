@@ -35,5 +35,8 @@ namespace Data.Model
         public ICollection<ProductCategory>? productCategories { get; set; }   
 
         public ICollection<OrderDetail>? orderDetails { get; set; }
+
+        public int? SupplierId { get; set; }
+        public Supplier? Suppliers { get; set; }
     }
 }

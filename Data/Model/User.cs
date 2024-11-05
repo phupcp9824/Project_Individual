@@ -20,7 +20,7 @@ namespace Data.Model
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Phone is required")]
-        [RegularExpression(@"^(03|09\d{8}$", ErrorMessage = "The phone number is not in the correct format")]
+        [RegularExpression(@"^(03|09\d{8})$", ErrorMessage = "Phone number must start with 03 or 09 and be followed by 8 digits.")]
         public int Phone {  get; set; }
 
         [Required(ErrorMessage = "Email is required")]
