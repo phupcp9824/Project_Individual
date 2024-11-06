@@ -8,11 +8,13 @@ namespace Data.Model
         public int Id { get; set; }
 
         [Required]
-        public string TenNhaCungCap { get; set; }
+        public string Name { get; set; }
 
-        public string DiaChi { get; set; }
+        public string? Address { get; set; }
 
-        public string? SoDienThoai { get; set; }
+        public string? Email { get; set; }
+
+        public string? Phone { get; set; }
 
         public ICollection<Product>? products { get; set; }
     }
