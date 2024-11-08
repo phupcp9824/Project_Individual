@@ -1,0 +1,61 @@
+﻿@model Data.Model.User
+
+@{
+    ViewData["Title"] = "DetailUser";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+}
+
+
+<div>
+    <h3 class="text-center" style="color:chocolate" >Detai lUser</h3>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Password)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Password)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Role.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Role.Name)
+        </dd>
+    </dl>
+</div>
+<div class="mt-3">
+    <a asp-controller="Admin" asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-outline-success"><i class="bi bi-pencil-fill"></i></a>
+    <a asp-action="GetUser" class="btn btn-outline-dark"><i class="bi bi-skip-backward-btn"></i></a>
+</div>
+

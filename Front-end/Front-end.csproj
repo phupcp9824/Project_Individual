@@ -55,6 +55,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Assest\Client\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

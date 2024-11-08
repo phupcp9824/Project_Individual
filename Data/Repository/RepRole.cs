@@ -27,15 +27,18 @@ namespace Data.Repository
         {
             try
             {
-                _db.roles.Add(role);
+                await _db.roles.AddAsync(role);
                 await _db.SaveChangesAsync();
                 return role;
             }
             catch (Exception ex)
             {
-                throw;
+                // Log the error
+                Console.WriteLine($"Error: {ex.Message}");
+                throw new Exception("Could not save role to the database.", ex);
             }
         }
+
 
         public async Task<Role> Delete(int id)
         {

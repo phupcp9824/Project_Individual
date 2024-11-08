@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Back_end.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class RoleController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace Back_end.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] Role role)
+        public async Task<IActionResult> Create([FromBody] Role role)
         {
             if (role == null)
             {
@@ -38,15 +38,33 @@ namespace Back_end.Controllers
             {
                 return BadRequest("Category name is required.");
             }
-            var add = await _IrepRole.Create(role);
-            return Ok(add);
+            try
+            {
+                var addedRole = await _IrepRole.Create(role);
+                return Ok(addedRole);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating role.");
+                return StatusCode(500, "Internal server error while creating the role.");
+            }
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(Role role)
         {
-            await _IrepRole.Update(role);
-            return Ok(role);
+            try
+            {
+                await _IrepRole.Update(role);
+                return Ok(role);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating role.");
+                return StatusCode(500, "Internal server error while updating the role.");
+            }
+     
         }
 
         [HttpDelete("{id}")]

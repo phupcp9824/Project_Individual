@@ -1,0 +1,119 @@
+﻿@model IEnumerable<Data.Model.Product>
+
+@{
+    ViewData["Title"] = "GetProduct";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+}
+
+<h3 class="text-center" style="color:chocolate">List Product</h3>
+<div class="row mt-2">
+    <div class="col-10">
+        <form action="/Admin/GetProduct" method="get" class="form-inline my-2 my-lg-0 d-flex">
+            <input class="form-control mr-sm-2" type="search" name="name" placeholder="Search by name..." aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+    <div class="col-2">
+        <form asp-controller="Admin" asp-action="GetProduct" method="get" class="form-inline my-2 my-lg-0">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Show All</button>
+        </form>
+    </div>
+</div>
+<p class="mt-3">
+    <a asp-controller="Admin" asp-action="CreateProduct" class="btn btn-outline-primary"><i class="bi bi-plus-circle-fill"></i></a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MaProduct)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NameProduct)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Material)
+            </th>
+
+            <th>
+                Supplier
+            </th>
+            <th>
+                Sizes
+            </th>
+            <th>
+                Categoris
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaProduct)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NameProduct)
+                </td>
+                <td>
+                    <img src="@item.Image" width="80" height="100" alt="Alternate Text" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Material)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suppliers.Name)
+                </td>
+                <td>
+                    @if (item.ProductSizes != null)
+                    { // lặp qua từng pt productsize 
+                        foreach (var productSize in item.ProductSizes)
+                        {
+                            <span>@productSize.Size.Name</span>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (item.productCategories != null)
+                    {
+                        foreach (var ProductCategory in item.productCategories)
+                        {
+                            <span>@ProductCategory.Category.Name</span>
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    <a asp-controller="Admin" asp-action="EditProduct" asp-route-id="@item.Id" class="btn btn-outline-success"><i class="bi bi-pencil-fill"></i></a>
+                    <a asp-controller="Admin" asp-action="DetailProduct" asp-route-id="@item.Id" class="btn btn-outline-secondary"><i class="bi bi-ticket-detailed"></i></a>
+                    <form class="d-inline" asp-controller="Admin" asp-action="DeleteProduct" asp-route-id="@item.Id" method="post">
+                        <button class="btn btn-outline-danger"><i class="bi bi-trash3"></i></button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

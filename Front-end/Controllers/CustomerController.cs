@@ -1,4 +1,5 @@
 ﻿using Data.Model;
+using Data.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
@@ -10,11 +11,12 @@ namespace Front_end.Controllers
     {
         private readonly HttpClient _httpClient;
 
-
-        public async Task<IActionResult> Index()
+        public CustomerController(HttpClient httpClient)
         {
-            return View();
+            _httpClient = httpClient;
         }
+
+     
 
         public async Task<IActionResult> Trangchu()
         {
@@ -48,21 +50,71 @@ namespace Front_end.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Signup(User user)
+        public async Task<IActionResult> SignUp(User user)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(user); // Return the view with the model errors
-            }
-            // StringContent đại diện cho content in stirng http
-            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json"); //application/json cho biết rằng nội dung đang được gửi là dữ liệu JSON
+            user.RoleId = 2; // Default to 'customer' role ID
+            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("https://localhost:7214/api/User", content);
-            if(response.IsSuccessStatusCode)
+
+            if (response.IsSuccessStatusCode)
             {
                 TempData["SuccessMessage"] = "Create Success";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("");
             }
             return View(user);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(string name = null, string type = null)
+        {
+            try
+            {
+                // Construct the base API URL
+                var query = new StringBuilder("https://localhost:7214/api/Product");
+
+                // Check if there are query parameters to append
+                if (!string.IsNullOrWhiteSpace(name) || !string.IsNullOrWhiteSpace(type))
+                {
+                    query.Append("?");
+                    if (!string.IsNullOrWhiteSpace(name))
+                        query.Append($"name={Uri.EscapeDataString(name)}&"); // mã hóa ký tự đặc biệt
+
+                    if (!string.IsNullOrWhiteSpace(type))
+                        query.Append($"type={Uri.EscapeDataString(type)}&");
+
+                    // Remove the last '&' character
+                    query.Length--;
+                }
+
+                // Log the query URL for debugging
+                Console.WriteLine($"API Request URL: {query}");
+
+                // Fetch data from the API
+                var products = await _httpClient.GetFromJsonAsync<List<Product>>(query.ToString());
+
+                if (products == null || !products.Any())
+                {
+                    TempData["ErrorMessage"] = "No products available.";
+                    return View(new List<Product>());
+                }
+
+                return View(products);
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Request error: {ex.Message}");
+                TempData["ErrorMessage"] = "Could not retrieve products at this time. Please try again later.";
+                return View(new List<Product>());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                TempData["ErrorMessage"] = "An unexpected error occurred. Please try again later.";
+                return View(new List<Product>());
+            }
+        }
+
+
+
     }
 }

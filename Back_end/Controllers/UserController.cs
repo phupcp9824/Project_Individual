@@ -22,12 +22,21 @@ namespace Back_end.Controllers
         [HttpGet]
         public async Task<IActionResult> Getall(string? name)
         {
-            var Listcate = await _IrepUser.GetAll(name);
-            return Ok(Listcate);
+            try
+            {
+                var listUser = await _IrepUser.GetAll(name);
+                return Ok(listUser);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching users.");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] User user)
+        public async Task<IActionResult> Create( User user)
         {
             if (user == null)
             {

@@ -20,14 +20,23 @@ namespace Back_end.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Getall(string? name)
+        public async Task<IActionResult> GetAll(string? name)
         {
-            var ListProduct = await _repProduct.GetAll(name);
-            return Ok(ListProduct);
+            try
+            {
+                var ListProduct = await _repProduct.GetAll(name);
+                return Ok(ListProduct);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (for production, replace Console.WriteLine with a proper logging library)
+                Console.WriteLine($"Error fetching products: {ex.Message}");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] Product product)
+        public async Task<IActionResult> Create([FromBody] Product product)
         {
             if (product == null)
             {
