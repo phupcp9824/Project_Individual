@@ -1,0 +1,32 @@
+﻿@model Data.Model.Size
+
+@{
+    ViewData["Title"] = "DetailSize";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+}
+
+<div>
+    <h3 class="text-center" style="color:chocolate">Detail Size</h3>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <a asp-controller="Size" asp-action="EditSize" asp-route-id="@Model.Id" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+                <a asp-action="GetSize" class="btn btn-outline-dark"><i class="bi bi-skip-backward-btn"></i></a>
+            </div>
+        </div>
+    </div>
+
+</div>
+

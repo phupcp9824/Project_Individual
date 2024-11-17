@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Back_end.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase
     {

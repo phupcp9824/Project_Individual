@@ -8,7 +8,7 @@ namespace Data.Model
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Username is required")]
-        [StringLength(25, MinimumLength = 6, ErrorMessage = "Username must from 3 - 25 characters")]
+        [StringLength(25, MinimumLength = 6, ErrorMessage = "Username must from 6 - 25 characters")]
         public string FullName { get; set; }
 
         [Required(ErrorMessage = "Username is required")]
