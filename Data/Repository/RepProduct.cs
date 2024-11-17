@@ -14,28 +14,39 @@ namespace Data.Repository
 
         public async Task<List<Product>> GetAll(string? NameProduct)
         {
-            var query = _db.products.AsQueryable(); // truy vấn linh hoạt
-            if (!string.IsNullOrEmpty(NameProduct))
+            var query = _db.products
+                .Include(c => c.Suppliers)
+                .Include(s => s.ProductSizes).ThenInclude(s => s.Size)
+                .Include(s => s.productCategories).ThenInclude(s => s.Category)
+                .AsQueryable();
+
+            // Apply search filter if NameProduct is provided
+            if (!string.IsNullOrWhiteSpace(NameProduct))
             {
-                query = query.Where(x => x.NameProduct.ToLower().Trim().Contains(NameProduct.ToLower().Trim()));
+                var normalizedSearchTerm = NameProduct.ToLower().Trim();
+                query = query.Where(x => x.NameProduct.ToLower().Contains(normalizedSearchTerm));
             }
-            var ListProduct = await query.ToListAsync();
-            return ListProduct;
+
+            // Execute query and return the results
+            return await query.ToListAsync();
         }
 
         public async Task<Product> Create(Product product)
         {
             try
             {
-                _db.products.Add(product);
+                await  _db.products.AddAsync(product);
                 await _db.SaveChangesAsync();
                 return product;
             }
             catch (Exception ex)
             {
-                throw; // Ném lại ngoại lệ để caller xử lý
+                // Log the error for debugging
+                Console.WriteLine("Error creating product: " + ex.Message);
+                throw; // Rethrow the exception for the caller to handle
             }
         }
+
 
         public async Task<Product> Delete(int id)
         {

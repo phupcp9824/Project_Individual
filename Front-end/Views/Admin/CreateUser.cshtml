@@ -1,0 +1,14 @@
+﻿@model Data.Model.User
+
+@{
+    ViewData["Title"] = "CreateUser";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+}
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

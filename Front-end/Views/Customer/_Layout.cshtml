@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Front_end</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Front_end.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        ul.navbar-nav li.nav-item a.nav-link {
+            font-size: 1.1rem;
+            color: black;
+            margin-right: 18px;
+        }
+        /* Adjust the logo size for responsiveness */
+        .navbar-brand img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        .Cart-Person i {
+            font-size: 1.9rem; /* Adjust the size as needed */
+            margin-right: 30px;
+        }
+
+        #cart-quantity {
+            top: -10px; 
+            left: 15px; /* Adjust this value to center the badge over the cart icon */
+            border-radius: 50%;
+            width: 24px; 
+            height: 24px;
+            display: flex; /* Use flex to center the content */
+            align-items: center; /* Center theo chiều dọc */
+            justify-content: center; /* Center ngang */
+            font-size: 12px; 
+        }
+
+        .dropdown-toggle::after {
+            display: none; /* Ẩn mũi tên */
+        }
+
+        .footer {
+            background-color: #1c1c1c;
+            color: #b5b5b5;
+            padding: 40px 0;
+        }
+
+        .footer a {
+            color: #b5b5b5;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+             color: #ffffff;
+        }
+
+        .footer-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .footer .copyright {
+            color: #b5b5b5;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .payment-icons img {
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .dropdown-item{
+            font-size:18px;
+
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand ms-3" href="#">
+                    <img src="~/image/Logoo.png" alt="Logo" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" aria-current="page" asp-controller="Customer" asp-action="Trangchu">TRANG CHỦ</a></li>
+                        <li class="nav-item"><a class="nav-link"  asp-controller="Customer" asp-action="Gioithieu">GIỚI THIỆU</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">SẢN PHẨM</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Customer" asp-action="Lienhe">LIÊN HỆ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">KHUYẾN MÃI</a></li>
+                        <form class="d-flex ms-5" role="search">
+                            <button class="btn btn-outline-success" style="font-size: 1.2rem;" type="submit"><i class="bi bi-search"></i></button>
+                        </form>
+                    </ul>
+                    <div class="Cart-Person d-flex align-items-center position-relative">
+                        <a class="mb-0 fs-4 me-2 position-relative">
+                            <i class="bi bi-cart4"></i>
+                            <span id="cart-quantity" class="badge bg-danger position-absolute" >0</span>
+                        </a>
+                        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                            <li><a class="nav-link" asp-controller="Customer" asp-action="Login">Login</a></li>
+                            <li><a class="nav-link" asp-controller="Customer" asp-action="Signup">Sign Up</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid border-top">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container-fluid ">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="footer-logo" style="padding-left:120px">EMILY</div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Hữu ích</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Giới thiệu</a></li>
+                        <li><a href="#">Cách mua trên Molla</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                        <li><a href="#">Đăng nhập</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Dịch vụ</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Phương thức thanh toán</a></li>
+                        <li><a href="#">Chính sách hoàn tiền</a></li>
+                        <li><a href="#">Hoàn hàng</a></li>
+                        <li><a href="#">Giao hàng</a></li>
+                        <li><a href="#">Chính sách và điều kiện</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Tài khoản của tôi</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Đăng ký</a></li>
+                        <li><a href="#">Giỏ hàng</a></li>
+                        <li><a href="#">Yêu thích</a></li>
+                        <li><a href="#">Theo dõi đơn hàng</a></li>
+                        <li><a href="#">Hỗ trợ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8" style="padding-left:120px">
+                    <p class="copyright">Copyright © Molla - Cong Phu. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-4 text-md-end" style="padding-right:200px">
+                    <div class="payment-icons">
+                        <img src="https://img.icons8.com/color/48/visa.png" alt="Visa">
+                        <img src="https://img.icons8.com/color/48/mastercard.png" alt="Mastercard">
+                        <img src="https://img.icons8.com/color/48/paypal.png" alt="Paypal">
+                        <img src="https://img.icons8.com/color/48/apple-pay.png" alt="Apple Pay">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

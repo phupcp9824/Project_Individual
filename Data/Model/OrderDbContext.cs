@@ -26,6 +26,7 @@ namespace Data.Model
         public DbSet<Role> roles { get; set; }
         public DbSet<Size> sizes { get; set; }
         public DbSet<User> users { get; set; }
+        public DbSet<Supplier> suppliers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

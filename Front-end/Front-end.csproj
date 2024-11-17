@@ -8,6 +8,32 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Customer\**" />
+    <Content Remove="Customer\**" />
+    <EmbeddedResource Remove="Customer\**" />
+    <None Remove="Customer\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Assest\Admin\assets\demo\chart-area-demo.js" />
+    <None Include="wwwroot\Assest\Admin\assets\demo\chart-bar-demo.js" />
+    <None Include="wwwroot\Assest\Admin\assets\demo\chart-pie-demo.js" />
+    <None Include="wwwroot\Assest\Admin\assets\demo\datatables-demo.js" />
+    <None Include="wwwroot\Assest\Admin\assets\img\error-404-monochrome.svg" />
+    <None Include="wwwroot\Assest\Admin\js\datatables-simple-demo.js" />
+    <None Include="wwwroot\Assest\Admin\js\scripts.js" />
+    <None Include="wwwroot\dist\css\adminlte.css.map" />
+    <None Include="wwwroot\dist\css\adminlte.min.css.map" />
+    <None Include="wwwroot\dist\css\adminlte.rtl.css.map" />
+    <None Include="wwwroot\dist\css\adminlte.rtl.min.css.map" />
+    <None Include="wwwroot\dist\js\adminlte.js" />
+    <None Include="wwwroot\dist\js\adminlte.js.map" />
+    <None Include="wwwroot\dist\js\adminlte.min.js" />
+    <None Include="wwwroot\dist\js\adminlte.min.js.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.32" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.32" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.32">
       <PrivateAssets>all</PrivateAssets>
@@ -18,11 +44,18 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.18" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Back_end\Back_end.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Assest\Client\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

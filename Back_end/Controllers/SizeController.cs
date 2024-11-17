@@ -27,7 +27,7 @@ namespace Back_end.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] Size size)
+        public async Task<IActionResult> Create( Size size)
         {
             if (size == null)
             {

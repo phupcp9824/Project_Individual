@@ -8,7 +8,7 @@ namespace Data.Model
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Username is required")]
-        [StringLength(25, MinimumLength = 6, ErrorMessage = "Username must from 3 - 25 characters")]
+        [StringLength(25, MinimumLength = 6, ErrorMessage = "Username must from 6 - 25 characters")]
         public string FullName { get; set; }
 
         [Required(ErrorMessage = "Username is required")]
@@ -20,8 +20,8 @@ namespace Data.Model
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Phone is required")]
-        [RegularExpression(@"^(03|09\d{8}$", ErrorMessage = "The phone number is not in the correct format")]
-        public int Phone {  get; set; }
+        [RegularExpression(@"^(03|09)\d{8}$", ErrorMessage = "Số điện thoại phải bắt đầu với 03 hoặc 09 và theo sau là 8 chữ số.")]
+        public string Phone {  get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]

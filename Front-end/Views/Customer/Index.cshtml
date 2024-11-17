@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Data.Model.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Customer/_Layout.cshtml";
+}
+<style>
+    .position-relative {
+        position: relative;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        color: black;
+        text-align: right;
+        z-index: 1;
+    }
+
+    .Patter_shirt h3, .Pstter_trouser h3 {
+        color: chocolate;
+        font-size: 20px;
+    }
+</style>
+
+<div class="container-fluid fill_height position-relative">
+    <div class="row align-items-center fill_height">
+        <img src="@Url.Content("~/image/Screenshot 2024-10-31 164240.png")" alt="Alternate Text" class="img-fluid" />
+        <div class="overlay-content">
+            <h4>Spring Collection 2025</h4>
+            <h1>Get up to 35% Off New Arrivals</h1>
+        </div>
+    </div>
+</div>
+    <div class="container mt-5">
+        <!-- Display any error messages -->
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-warning">@TempData["ErrorMessage"]</div>
+        }
+
+        @if (Model != null && Model.Any())
+        {
+            var shirts = Model.Where(x => x.NameProduct.ToLower().Contains("áo")).ToList();
+            var trousers = Model.Where(x => x.NameProduct.ToLower().Contains("quần")).ToList();
+
+            if (shirts.Any())
+            {
+                <div class="Patter_shirt text-center">
+                    <h2>@(ViewBag.Name == "áo" ? "Các mẫu áo bán chạy" : "Sản phẩm áo")</h2>
+                    <div class="row">
+                        @foreach (var item in shirts)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <img src="@item.Image" width="60px" height="250px" class="combo-image card-img-top" />
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.NameProduct</h5>
+                                        <p class="card-text" style="color:coral">
+                                            @item.Price VND
+                                            <a asp-controller="OrderDetail" asp-action="AddtoCart" asp-route-id="@item.Id" class="btn btn-primary float-right">
+                                                <i class="bi bi-cart-plus"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            if (trousers.Any())
+            {
+                <div class="Pstter_trouser text-center">
+                    <h2>@(ViewBag.Name == "quần" ? "Các mẫu quần bán chạy" : "Sản phẩm quần")</h2>
+                    <div class="row">
+                        @foreach (var item in trousers)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <img src="@item.Image" width="60px" height="250px" class="combo-image card-img-top" />
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.NameProduct</h5>
+                                        <p class="card-text" style="color:coral">
+                                            @item.Price VND
+                                            <a asp-controller="OrderDetail" asp-action="AddtoCart" asp-route-id="@item.Id" class="btn btn-primary float-right">
+                                                <i class="bi bi-cart-plus"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No products available at the moment.</p>
+        }
+    </div>
+

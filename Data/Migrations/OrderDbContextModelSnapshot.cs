@@ -225,7 +225,6 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaProduct")
@@ -248,11 +247,12 @@ namespace Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("products");
                 });
@@ -377,6 +377,32 @@ namespace Data.Migrations
                     b.ToTable("sizes");
                 });
 
+            modelBuilder.Entity("Data.Model.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("suppliers");
+                });
+
             modelBuilder.Entity("Data.Model.User", b =>
                 {
                     b.Property<int>("Id")
@@ -404,8 +430,9 @@ namespace Data.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
-                    b.Property<int>("Phone")
-                        .HasColumnType("int");
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("RoleId")
                         .HasColumnType("int");
@@ -480,6 +507,15 @@ namespace Data.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Data.Model.Product", b =>
+                {
+                    b.HasOne("Data.Model.Supplier", "Suppliers")
+                        .WithMany("products")
+                        .HasForeignKey("SupplierId");
+
+                    b.Navigation("Suppliers");
                 });
 
             modelBuilder.Entity("Data.Model.ProductCategory", b =>
@@ -563,6 +599,11 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Model.Size", b =>
                 {
                     b.Navigation("ProductSizes");
+                });
+
+            modelBuilder.Entity("Data.Model.Supplier", b =>
+                {
+                    b.Navigation("products");
                 });
 
             modelBuilder.Entity("Data.Model.User", b =>

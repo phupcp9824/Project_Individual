@@ -1,0 +1,83 @@
+﻿@model Data.Model.Product
+
+@{
+    ViewData["Title"] = "EditProduct";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+}
+
+<h3>Edit Product</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Product" asp-action="EditProduct" enctype="multipart/form-data" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MaProduct" class="control-label"></label>
+                <input asp-for="MaProduct" class="form-control" />
+                <span asp-validation-for="MaProduct" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NameProduct" class="control-label"></label>
+                <input asp-for="NameProduct" class="form-control" />
+                <span asp-validation-for="NameProduct" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input type="file" name="imageURL" class="form-control" accept="image/*" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" type="number" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Material" class="control-label"></label>
+                <input asp-for="Material" class="form-control" />
+                <span asp-validation-for="Material" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductSizes" class="control-label"></label>
+                <select id="ProductSizes" name="ProductSizes" class="form-control" asp-items="ViewBag.Size">
+                    <option value="">Select Size</option>
+                </select>
+                <span asp-validation-for="ProductSizes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="productCategories" class="control-label"></label>
+                <select id="productCategories" name="productCategories" class="form-control" asp-items="ViewBag.Category">
+                    <option value="">Select Category</option>
+                </select>
+                <span asp-validation-for="ProductSizes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierId" class="control-label"></label>
+                <select id="SupplierId" name="SupplierId" class="form-control" asp-items="ViewBag.Supplier">
+                    <option value="">Supplier</option>
+                </select>
+                <span asp-validation-for="SupplierId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="GetProduct" class="btn btn-outline-dark"><i class="bi bi-skip-backward-btn"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
