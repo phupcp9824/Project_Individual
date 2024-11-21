@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using NuGet.Common;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Front_end.Controllers
@@ -9,10 +11,38 @@ namespace Front_end.Controllers
     public class UserController : Controller
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserController(HttpClient httpClient)
+        public UserController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
+            _httpContextAccessor = httpContextAccessor;
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(User user)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = "Invalid input data.";
+                return View();
+            }
+                // Send request to API
+                var response = await _httpClient.PostAsJsonAsync("https://localhost:7214/api/User/Login", user);
+
+                if (response.IsSuccessStatusCode)
+                {
+                // Read the response
+                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                    if (loginResponse != null)
+                    {
+           
+                    // Redirect based on roles
+                    return loginResponse.Role == "Admin"
+                            ? RedirectToAction("Index", "Admin")
+                            : RedirectToAction("Index", "Customer");
+                    }
+                }
+            return View();
         }
 
         [HttpGet]

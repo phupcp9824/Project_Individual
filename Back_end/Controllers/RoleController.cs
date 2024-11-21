@@ -2,6 +2,7 @@
 using Data.Model;
 using Data.Repository;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Back_end.Controllers
@@ -12,6 +13,8 @@ namespace Back_end.Controllers
     {
         private readonly IRepRole _IrepRole;
         private readonly ILogger<SizeController> _logger;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RoleController(IRepRole repRole, ILogger<SizeController> logger)
         {
