@@ -102,7 +102,6 @@ namespace Back_end.Controllers
             {
                 Successfull = true,
                 Token = tokenResult.Token,
-                UserName = loginModel.Username,
                 RefreshToken = tokenResult.RefreshToken,
                 Role = user.Role.Name,
                 userID = user.Id.ToString()
