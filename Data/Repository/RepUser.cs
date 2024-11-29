@@ -91,10 +91,10 @@ namespace Data.Repository
                 throw;
             }
         }
-        public async Task<User> Login(LoginModel loginModel)
-        {
-            return await _db.users.Include(u => u.Role).FirstOrDefaultAsync(x => x.Username == loginModel.Username && x.Password == loginModel.Password);
-        }
+        //public async Task<User> Login(LoginModel loginModel)
+        //{
+        //    return await _db.users.Include(u => u.Role).FirstOrDefaultAsync(x => x.Username == loginModel.Username && x.Password == loginModel.Password);
+        //}
 
     }
 }

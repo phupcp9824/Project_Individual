@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class hi : Migration
+    public partial class migrationname : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,7 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -34,26 +34,6 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_paymentMethods", x => x.PaymentMethodId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "products",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MaProduct = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    NameProduct = table.Column<string>(type: "nvarchar(35)", maxLength: 35, nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Material = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -102,27 +82,19 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "productCategories",
+                name: "suppliers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_productCategories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_productCategories_categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "categories",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_productCategories_products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "products",
-                        principalColumn: "Id");
+                    table.PrimaryKey("PK_suppliers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -132,11 +104,11 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FullName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    Phone = table.Column<int>(type: "int", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     RoleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -150,26 +122,27 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "productSizes",
+                name: "products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: true),
-                    SizeId = table.Column<int>(type: "int", nullable: true)
+                    MaProduct = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    NameProduct = table.Column<string>(type: "nvarchar(35)", maxLength: 35, nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Material = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    SupplierId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_productSizes", x => x.Id);
+                    table.PrimaryKey("PK_products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_productSizes_products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "products",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_productSizes_sizes_SizeId",
-                        column: x => x.SizeId,
-                        principalTable: "sizes",
+                        name: "FK_products_suppliers_SupplierId",
+                        column: x => x.SupplierId,
+                        principalTable: "suppliers",
                         principalColumn: "Id");
                 });
 
@@ -231,6 +204,54 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "productCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_productCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_productCategories_categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "categories",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_productCategories_products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "products",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "productSizes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: true),
+                    SizeId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_productSizes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_productSizes_products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "products",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_productSizes_sizes_SizeId",
+                        column: x => x.SizeId,
+                        principalTable: "sizes",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "orderDetails",
                 columns: table => new
                 {
@@ -284,6 +305,16 @@ namespace Data.Migrations
                         principalTable: "users",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.InsertData(
+                table: "roles",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 1, "Administrator role", "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "roles",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 2, "Customer role", "Customer" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_carts_UserId",
@@ -340,6 +371,11 @@ namespace Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_products_SupplierId",
+                table: "products",
+                column: "SupplierId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_productSizes_ProductId",
                 table: "productSizes",
                 column: "ProductId");
@@ -392,6 +428,9 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "suppliers");
 
             migrationBuilder.DropTable(
                 name: "roles");

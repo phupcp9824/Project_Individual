@@ -19,7 +19,7 @@ namespace Front_end.Controllers
             _httpClient = httpClient;
             _httpClient.BaseAddress = BaseAddress;
         }
-
+        // update
         public async Task<IActionResult> Index()
         {
             return View();

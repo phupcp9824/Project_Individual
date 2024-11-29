@@ -10,7 +10,6 @@ namespace Data.IRepository
         Task<User> Delete(int id);
         Task<User> GetById(int id);
 
-        Task<User> Login(LoginModel loginModel);
 
     }
 }

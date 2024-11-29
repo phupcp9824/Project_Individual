@@ -10,7 +10,7 @@ namespace Data.Configuration
         {
             builder.HasKey(r => r.Id);
             builder.Property(r => r.Name).IsRequired().HasMaxLength(25);
-
+          
             builder.HasMany(r => r.users)
                 .WithOne(u => u.Role)
                 .HasForeignKey(u => u.RoleId);

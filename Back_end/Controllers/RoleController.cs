@@ -1,6 +1,7 @@
 ﻿using Data.IRepository;
 using Data.Model;
 using Data.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +10,12 @@ namespace Back_end.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+    [Authorize(Policy = "AdminPolicy")]
     public class RoleController : ControllerBase
     {
         private readonly IRepRole _IrepRole;
         private readonly ILogger<SizeController> _logger;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RoleController(IRepRole repRole, ILogger<SizeController> logger)
         {

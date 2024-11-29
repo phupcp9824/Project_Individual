@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data.Model
 {
-    public class Role
+    public class Role 
     {
         [Key]
         public int Id { get; set; }

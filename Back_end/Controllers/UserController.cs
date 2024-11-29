@@ -1,11 +1,19 @@
-﻿using Data.IRepository;
+﻿using Data.DTO;
+using Data.IRepository;
 using Data.Model;
 using Data.Repository;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.WebSockets;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Back_end.Controllers
@@ -18,9 +26,10 @@ namespace Back_end.Controllers
         private readonly ILogger<SizeController> _logger;
         private readonly IConfiguration _configuration;
 
-
-        public UserController(IRepUser repUser, ILogger<SizeController> logger, IConfiguration configuration)
+        private readonly OrderDbContext _db;
+        public UserController(IRepUser repUser, ILogger<SizeController> logger, IConfiguration configuration, OrderDbContext db)
         {
+            _db = db;
             _IrepUser = repUser;
             _logger = logger;
             _configuration = configuration;
@@ -43,7 +52,7 @@ namespace Back_end.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create( User user)
+        public async Task<IActionResult> Create(User user)
         {
             if (user == null)
             {
@@ -79,84 +88,104 @@ namespace Back_end.Controllers
             return Ok(GetById);
         }
 
-
-        [HttpPost]
-        [Route("Login")]
-        public async Task<IActionResult> Login([FromForm] LoginModel loginModel)
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] User model)
         {
-            var user = await _IrepUser.Login(loginModel);
-            if (user == null)
+            if (!ModelState.IsValid)
             {
-                return Ok(new LoginResponse
-                {
-                    Successfull = false,
-                    Error = "Invalid Username and Password"
-                });
+                return BadRequest(ModelState);
             }
-
-            // Generate tokens
-            var tokenResult = CreateToken(user);
-
-
-            return Ok(new LoginResponse
+            var existingUser = _db.users.FirstOrDefault(e => e.Email == model.Email || e.Username == model.Username);
+            if (existingUser != null)
             {
-                Successfull = true,
-                Token = tokenResult.Token,
-                RefreshToken = tokenResult.RefreshToken,
-                Role = user.Role.Name,
-                userID = user.Id.ToString()
-            }) ;
+                return BadRequest(new { Message = "Email or Username already exists" });
+            }
+            // băm the password before storing it
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+
+            var user = new User
+            {
+                FullName = model.FullName,
+                Username = model.Username,
+                Password = hashedPassword,
+                Phone = model.Phone,
+                Email = model.Email,
+                Address = model.Address ?? string.Empty,
+                RoleId = 2
+            };
+            await _db.users.AddAsync(user);
+            await _db.SaveChangesAsync();
+            return Ok(new { Message = "User registered successfully!" });
         }
 
-        private LoginResponse CreateToken(User user)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            try
+
+            var User = _db.users.Include(u => u.Role).FirstOrDefault(u => u.Username == model.UserName);
+            if (User == null || !BCrypt.Net.BCrypt.Verify(model.Password, User.Password))
             {
-                // Claims (yêu cầu) access token
-                var claims = new[]
-                {
-                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["JWT:Subject"] ?? "DefaultSubject"),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim("UserId", user.Id.ToString()),
-                        new Claim("Username", user.Username),
-                        new Claim(ClaimTypes.Role, user.Role?.Name)
-                };
-
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecurityKey"]));// mã hóa Token tránh giả mạo
-                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha512); // mã hóa để ký token, ensure server able generate valid token
-
-                // Create access token
-                var token = new JwtSecurityToken(
-                    _configuration["JWT:Issuer"],
-                    _configuration["JWT:Audience"],
-                    claims,
-                    expires: DateTime.UtcNow.AddMinutes(60),
-                    signingCredentials: signIn
-                );
-
-                //Create refresh token / mà ko cần login lại
-                var refreshToken = new RefreshToken
-                {
-                    Token = Guid.NewGuid().ToString(),
-                    Expiration = DateTime.UtcNow.AddDays(7),
-                    UserId = user.Id
-                };
-
-                // Convert token to string send to client
-                var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-                return new LoginResponse
-                {
-                    Successfull = true,
-                    Token = accessToken,
-                    RefreshToken = refreshToken.Token,
-                };
+                return Unauthorized(new { Message = "Invalid username or password" });
             }
-            catch (Exception ex)
+            
+            // Generate the JWT token for the user
+            var token = GenerateJwtToken(User.Username, User.Role.Name, User.Id);
+
+            // Set the JWT token in an HttpOnly cookie
+            Response.Cookies.Append("Token", token, new CookieOptions
             {
-                _logger.LogError(ex, "Error creating token");
-                throw;
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                MaxAge = TimeSpan.FromMinutes(60)
+            });
+
+            // Return a response with user details and the token
+            return Ok(new
+            {
+                Token = token,
+                UserName = User.Username,
+                UserRole = User.Role.Name,
+                UserId = User.Id
+            });
+        }
+
+        private string GenerateJwtToken(string user, string userRole, int userId)
+        {
+            var jwtKey = _configuration["Jwt:SecurityKey"];
+            if (string.IsNullOrEmpty(jwtKey))
+            {
+                throw new ArgumentNullException("Jwt:Key is not configured properly.");
             }
+
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.Name, user),
+            new Claim(ClaimTypes.Role, userRole ?? "User"),
+            new Claim("UserId", userId.ToString())
+        };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Response.Cookies.Delete("Shoe_Store_Cookie");
+
+            return Ok(new { Message = "Logout Success." });
         }
     }
 }
+

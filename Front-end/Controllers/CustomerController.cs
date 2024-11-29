@@ -1,7 +1,10 @@
-﻿using Data.Model;
+﻿using Data.DTO;
+using Data.Model;
 using Data.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -16,61 +19,13 @@ namespace Front_end.Controllers
             _httpClient = httpClient;
         }
 
-     
-
-        public async Task<IActionResult> Trangchu()
-        {
-            return View();
-        }
-        public async Task<IActionResult> Gioithieu()
-        {
-            return View();
-        }
-        public async Task<IActionResult> Lienhe()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Login(User user)
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Signup()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SignUp(User user)
-        {
-            user.RoleId = 2; // Default to 'customer' role ID
-            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("https://localhost:7214/api/User", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["SuccessMessage"] = "Create Success";
-                return RedirectToAction("");
-            }
-            return View(user);
-        }
-
         [HttpGet]
         public async Task<IActionResult> Index(string name = null, string type = null)
         {
             try
             {
                 // Construct the base API URL
-                var query = new StringBuilder("https://localhost:7214/api/Product");
+                var query = new StringBuilder("https://localhost:7214/api/Customer");
 
                 // Check if there are query parameters to append
                 if (!string.IsNullOrWhiteSpace(name) || !string.IsNullOrWhiteSpace(type))
@@ -114,7 +69,123 @@ namespace Front_end.Controllers
             }
         }
 
+        public async Task<IActionResult> Trangchu()
+        {
+            return View();
+        }
+        public async Task<IActionResult> Gioithieu()
+        {
+            return View();
+        }
+        public async Task<IActionResult> Lienhe()
+        {
+            return View();
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = "Invalid input data.";
+                return View();
+            }
+
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("https://localhost:7214/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            // Send request to API
+            var response = await _httpClient.PostAsJsonAsync("https://localhost:7214/api/User/Login", model);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Read the response
+                var result = await response.Content.ReadFromJsonAsync<LoginModel>();
+
+                if (result != null)
+                {
+                    var token = result.Token;
+                    var userName = result.UserName;
+                    var role = result.userRole;
+                    var userId = result.userID.ToString();
+
+                    Response.Cookies.Append("Cookie", token, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                    Response.Cookies.Append("userRoles", role, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                    Response.Cookies.Append("userName", userName, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                    Response.Cookies.Append("userId", userId, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                    if (role == "Admin")
+                    {
+                        return RedirectToAction("Index", "Admin");
+                    }
+                    else if (role == "Customer")
+                    {
+                        return RedirectToAction("Index", "Customer");
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Invalid role.";
+                        return View();
+                    }
+                }
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Signup()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Signup(User user)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("https://localhost:7214/api/User/Register", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "User registered successfully!";
+                return RedirectToAction("Login"); 
+            }
+            return View(user);
+        }
 
     }
 }

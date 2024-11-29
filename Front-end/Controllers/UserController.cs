@@ -1,4 +1,5 @@
-﻿using Data.Model;
+﻿using Data.DTO;
+using Data.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ namespace Front_end.Controllers
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(User user)
         {
@@ -26,22 +28,69 @@ namespace Front_end.Controllers
                 ViewBag.Error = "Invalid input data.";
                 return View();
             }
-                // Send request to API
-                var response = await _httpClient.PostAsJsonAsync("https://localhost:7214/api/User/Login", user);
+            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            // Send request to API
+            var response = await _httpClient.PostAsJsonAsync("https://localhost:7214/api/User/Login", content);
 
-                if (response.IsSuccessStatusCode)
-                {
+            if (response.IsSuccessStatusCode)
+            {
                 // Read the response
-                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                    if (loginResponse != null)
+                var result = await response.Content.ReadFromJsonAsync<LoginModel>();
+
+                if (result != null)
+                {
+                    var token = result.Token;
+                    var userName = result.UserName;
+                    var role = result.userRole;
+                    var userId = result.userID?.ToString();
+
+                    Response.Cookies.Append("Cookie", token, new CookieOptions
                     {
-           
-                    // Redirect based on roles
-                    return loginResponse.Role == "Admin"
-                            ? RedirectToAction("Index", "Admin")
-                            : RedirectToAction("Index", "Customer");
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                    Response.Cookies.Append("userRoles", role, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                    Response.Cookies.Append("userName", userName, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                    Response.Cookies.Append("userId", userId, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                    if (role == "Admin")
+                    {
+                        return RedirectToAction("Index", "Admin");
+                    }
+                    else if (role == "Customer")
+                    {
+                        return RedirectToAction("Index", "Customer");
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Invalid role.";
+                        return View();
                     }
                 }
+            }
             return View();
         }
 

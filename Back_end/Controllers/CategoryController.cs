@@ -1,12 +1,17 @@
 ﻿using Data.IRepository;
 using Data.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Back_end.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+    [Authorize(Policy = "AdminPolicy")]
+    
     public class CategoryController : ControllerBase
     {
         private readonly IRepCategory _IrepCategory;

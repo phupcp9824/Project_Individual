@@ -8,6 +8,7 @@ namespace Data.Model
         {
 
         }
+
         public OrderDbContext(DbContextOptions options) : base(options)
         {
 
@@ -28,9 +29,16 @@ namespace Data.Model
         public DbSet<User> users { get; set; }
         public DbSet<Supplier> suppliers { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-7KKDTTL\\SQLEXPRESS;Database=Project-Individual;Trusted_Connection=True;TrustServerCertificate =True");
+            // Seed Roles
+            modelBuilder.Entity<Role>().HasData
+                (
+                new Role {Id = 1, Name = "Admin", Description = "Administrator role" },
+                new Role { Id = 2, Name = "Customer", Description = "Customer role" }
+                );
         }
     }
 }
