@@ -47,7 +47,7 @@ namespace Front_end.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateProduct()
         {
-            var Sizes = await _httpClient.GetFromJsonAsync<List<Data.Model.Size>>("https://localhost:7214/api/Size");
+            var Sizes = await _httpClient.GetFromJsonAsync<List<Size>>("https://localhost:7214/api/Size");
             ViewBag.Size = new SelectList(Sizes, "Id", "Name");
 
             var Category = await _httpClient.GetFromJsonAsync<List<Category>>("https://localhost:7214/api/Category");

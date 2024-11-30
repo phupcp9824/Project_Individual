@@ -21,7 +21,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
            options.LogoutPath = "/AuthMiddleware/Logout";
            options.ExpireTimeSpan = TimeSpan.FromHours(1);
        });
-
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

@@ -8,6 +8,5 @@
         public string? userRole { get; set; }
         public object? userID { get; set; }
 
-
     }
 }

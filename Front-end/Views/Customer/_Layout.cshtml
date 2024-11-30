@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Front_end.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap Icon -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         ul.navbar-nav li.nav-item a.nav-link {
@@ -27,15 +31,15 @@
         }
 
         #cart-quantity {
-            top: -10px; 
+            top: -10px;
             left: 15px; /* Adjust this value to center the badge over the cart icon */
             border-radius: 50%;
-            width: 24px; 
+            width: 24px;
             height: 24px;
             display: flex; /* Use flex to center the content */
             align-items: center; /* Center theo chiều dọc */
             justify-content: center; /* Center ngang */
-            font-size: 12px; 
+            font-size: 12px;
         }
 
         .dropdown-toggle::after {
@@ -48,14 +52,14 @@
             padding: 40px 0;
         }
 
-        .footer a {
-            color: #b5b5b5;
-            text-decoration: none;
-        }
+            .footer a {
+                color: #b5b5b5;
+                text-decoration: none;
+            }
 
-        .footer a:hover {
-             color: #ffffff;
-        }
+                .footer a:hover {
+                    color: #ffffff;
+                }
 
         .footer-logo {
             font-size: 24px;
@@ -74,14 +78,21 @@
             margin-right: 10px;
         }
 
-        .dropdown-item{
-            font-size:18px;
-
+        .dropdown-item {
+            font-size: 18px;
         }
+
+        .dropdown-menu {
+            min-width: 86px; /* Độ rộng menu */
+        }
+
     </style>
 </head>
 <body>
     <header>
+        @{
+            string userName = Context.Request.Cookies["userName"];
+        }
         <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
             <div class="container-fluid">
                 <a class="navbar-brand ms-3" href="#">
@@ -93,7 +104,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" aria-current="page" asp-controller="Customer" asp-action="Trangchu">TRANG CHỦ</a></li>
-                        <li class="nav-item"><a class="nav-link"  asp-controller="Customer" asp-action="Gioithieu">GIỚI THIỆU</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Customer" asp-action="Gioithieu">GIỚI THIỆU</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">SẢN PHẨM</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Customer" asp-action="Lienhe">LIÊN HỆ</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">KHUYẾN MÃI</a></li>
@@ -104,12 +115,35 @@
                     <div class="Cart-Person d-flex align-items-center position-relative">
                         <a class="mb-0 fs-4 me-2 position-relative">
                             <i class="bi bi-cart4"></i>
-                            <span id="cart-quantity" class="badge bg-danger position-absolute" >0</span>
+                            <span id="cart-quantity" class="badge bg-danger position-absolute">0</span>
                         </a>
-                        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                            <li><a class="nav-link" asp-controller="Customer" asp-action="Login">Login</a></li>
-                            <li><a class="nav-link" asp-controller="Customer" asp-action="Signup">Sign Up</a></li>
-                        </ul>
+                        <div class="dropdown">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-none d-md-inline">
+                                    @if (string.IsNullOrEmpty(userName))
+                                    {
+                                        <span></span>
+                                    }
+                                    else
+                                    {
+                                        <span>@userName</span>
+                                    }
+                                </span>
+                                <a class="nav-link dropdown-toggle text-dark" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-fill"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                                    <li><a class="dropdown-item" asp-controller="Customer" asp-action="Login">Login</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Customer" asp-action="Signup">Register</a></li>
+                                    <hr></hr>
+                                    <li>
+                                        <form asp-controller="Customer" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,9 +151,9 @@
     </header>
 
     <div class="container-fluid border-top">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
 
     <footer class="border-top footer text-muted">
@@ -175,7 +209,8 @@
             </div>
         </div>
     </footer>
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

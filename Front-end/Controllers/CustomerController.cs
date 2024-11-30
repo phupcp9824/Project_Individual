@@ -13,10 +13,13 @@ namespace Front_end.Controllers
     public class CustomerController : Controller
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _client;
 
-        public CustomerController(HttpClient httpClient)
+
+        public CustomerController(HttpClient httpClient, IHttpClientFactory client)
         {
             _httpClient = httpClient;
+            _client = client;
         }
 
         [HttpGet]
@@ -148,7 +151,6 @@ namespace Front_end.Controllers
                         SameSite = SameSiteMode.Strict,
                         Expires = DateTimeOffset.UtcNow.AddHours(1)
                     });
-
                     if (role == "Admin")
                     {
                         return RedirectToAction("Index", "Admin");
@@ -185,6 +187,32 @@ namespace Front_end.Controllers
                 return RedirectToAction("Login"); 
             }
             return View(user);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+
+            try
+            {
+                var client = _client.CreateClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["Token"]);
+                var response = await client.PostAsync("https://localhost:7214/api/User/logout", null);
+                if (!response.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError("", "Failed to notify the server about logout.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error during logout: {ex.Message}");
+            }
+            // Remove additional cookies
+            HttpContext.Response.Cookies.Delete("Cookie");
+            HttpContext.Response.Cookies.Delete("userId");
+            HttpContext.Response.Cookies.Delete("userRoles");
+            HttpContext.Response.Cookies.Delete("userName");
+            return RedirectToAction("Login", "Customer");
         }
 
     }

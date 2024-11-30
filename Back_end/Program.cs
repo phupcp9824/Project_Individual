@@ -37,12 +37,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
     options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
 });
-//Add Identity
-//builder.Services.AddIdentity<User, Role>()
-//    .AddEntityFrameworkStores<OrderDbContext>()
-//    .AddDefaultTokenProviders();
-
-
 // Adding Authentication  
 builder.Services.AddAuthentication(options =>
 {

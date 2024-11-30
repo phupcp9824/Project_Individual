@@ -15,6 +15,7 @@ using System.Net.WebSockets;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Back_end.Controllers
 {
@@ -33,59 +34,6 @@ namespace Back_end.Controllers
             _IrepUser = repUser;
             _logger = logger;
             _configuration = configuration;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Getall(string? name)
-        {
-            try
-            {
-                var listUser = await _IrepUser.GetAll(name);
-                return Ok(listUser);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error fetching users.");
-                return StatusCode(500, "Internal server error.");
-            }
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Create(User user)
-        {
-            if (user == null)
-            {
-                return BadRequest("Category cannot be null.");
-            }
-
-            if (string.IsNullOrEmpty(user.FullName))
-            {
-                return BadRequest("Category name is required.");
-            }
-            var add = await _IrepUser.Create(user);
-            return Ok(add);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Update(User user)
-        {
-            await _IrepUser.Update(user);
-            return Ok(user);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var CateId = await _IrepUser.Delete(id);
-            return Ok(CateId);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var GetById = await _IrepUser.GetById(id);
-            return Ok(GetById);
         }
 
         [HttpPost("Register")]
@@ -182,7 +130,7 @@ namespace Back_end.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Response.Cookies.Delete("Shoe_Store_Cookie");
+            HttpContext.Response.Cookies.Delete("Token");
 
             return Ok(new { Message = "Logout Success." });
         }
