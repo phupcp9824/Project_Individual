@@ -32,7 +32,6 @@ namespace Data.Model
         public string? Address { get; set; }
         public int? RoleId { get; set; }
         public Role? Role { get; set; }
-        public Cart? Cart { get; set; }
         public ICollection<Order>? orders { get; set; }
         public ICollection<Invoice>? invoices { get; set; }
 

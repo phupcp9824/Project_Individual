@@ -14,10 +14,7 @@ namespace Data.Configuration
             builder.Property(u => u.Password).IsRequired().HasMaxLength(25);
             builder.Property(u => u.Email).IsRequired().HasMaxLength(100);
 
-            builder.HasOne(u => u.Cart)
-                .WithOne(c => c.User)
-                .HasForeignKey<Cart>(c => c.UserId);
-
+      
             builder.HasMany(u => u.orders)
                 .WithOne(o => o.User)
                 .HasForeignKey(o => o.UserId);

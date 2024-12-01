@@ -14,7 +14,6 @@ namespace Data.Model
 
         }
 
-        public DbSet<Cart> carts { get; set; }
         public DbSet<Category> categories { get; set; }
         public DbSet<Invoice> invoices { get; set; }
         public DbSet<Order> orders { get; set; }

@@ -18,9 +18,7 @@ namespace Data.Configuration
                 .WithMany(p => p.orderDetails)
                 .HasForeignKey(od => od.ProductId);
 
-            builder.HasOne(od => od.Cart)
-                .WithMany(c => c.orderDetails)
-                .HasForeignKey(od => od.CartId);
+ 
         }
     }
 }

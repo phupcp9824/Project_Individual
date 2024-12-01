@@ -77,18 +77,17 @@ namespace Back_end.Controllers
             }
             
             // Generate the JWT token for the user
-            var token = GenerateJwtToken(User.Username, User.Role.Name, User.Id);
+            var token = GenerateJwtToken(User.Username , User.Role.Name, User.Id);
 
-            // Set the JWT token in an HttpOnly cookie
+            // lưu token vào cookie
             Response.Cookies.Append("Token", token, new CookieOptions
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
+                HttpOnly = true, // cookie only access a server
+                Secure = true, //cookie chỉ connect https
+                SameSite = SameSiteMode.Strict, // prevent sent cookie to trang khác
                 MaxAge = TimeSpan.FromMinutes(60)
             });
 
-            // Return a response with user details and the token
             return Ok(new
             {
                 Token = token,
@@ -105,19 +104,19 @@ namespace Back_end.Controllers
             {
                 throw new ArgumentNullException("Jwt:Key is not configured properly.");
             }
-
+            // lưu jwt
             var claims = new[]
             {
             new Claim(ClaimTypes.Name, user),
             new Claim(ClaimTypes.Role, userRole ?? "User"),
             new Claim("UserId", userId.ToString())
-        };
+            };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)); // mã hóa and giải mã JWT chuyển thành mảng byte
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); //chứa infor đc mã hóa
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
+                issuer: _configuration["Jwt:Issuer"], // XD nhà phát hành
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),

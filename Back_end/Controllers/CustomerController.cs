@@ -1,4 +1,5 @@
 ﻿using Data.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace Back_end.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class CustomerController : ControllerBase
     {
         private readonly IRepProduct _repProduct;
@@ -16,6 +18,7 @@ namespace Back_end.Controllers
             _repProduct = repProduct;
             _logger = logger;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll(string? name)
         {

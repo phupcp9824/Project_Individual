@@ -9,11 +9,7 @@ namespace Data.Configuration
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.HasKey(o => o.Id);
-            builder.Property(o => o.ShipName).IsRequired().HasMaxLength(100);
-            builder.Property(o => o.ShippingAddress).IsRequired();
-            builder.Property(o => o.ShipPhoneNumber).IsRequired().HasMaxLength(15);
-            builder.Property(o => o.PaymentStatus).IsRequired().HasMaxLength(10);
-            builder.Property(o => o.TotalAmount).HasColumnType("decimal(18,2)");
+
 
             builder.HasOne(o => o.User)
                 .WithMany(u => u.orders)

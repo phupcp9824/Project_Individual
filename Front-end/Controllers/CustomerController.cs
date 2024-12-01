@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace Front_end.Controllers
 {
@@ -70,6 +71,17 @@ namespace Front_end.Controllers
                 TempData["ErrorMessage"] = "An unexpected error occurred. Please try again later.";
                 return View(new List<Product>());
             }
+            
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DetailIndex(string name)
+        {
+            var query = new StringBuilder("https://localhost:7214/api/Role?");
+            if (!string.IsNullOrWhiteSpace(name))
+                query.Append($"name={name}&");
+            var Product = await _httpClient.GetFromJsonAsync<List<Role>>(query.ToString());
+            return View(Product);
         }
 
         public async Task<IActionResult> Trangchu()
@@ -83,6 +95,26 @@ namespace Front_end.Controllers
         public async Task<IActionResult> Lienhe()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Signup()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Signup(User user)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json"); // /ma hóa UTF8/ định là json
+            var response = await _httpClient.PostAsync("https://localhost:7214/api/User/Register", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "User registered successfully!";
+                return RedirectToAction("Login");
+            }
+            return View(user);
         }
 
         [HttpGet]
@@ -102,6 +134,7 @@ namespace Front_end.Controllers
 
             var client = new HttpClient();
             client.BaseAddress = new Uri("https://localhost:7214/");
+            //Chỉ định ứng dụng nhận được response dưới dạng JSON.
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -120,6 +153,7 @@ namespace Front_end.Controllers
                     var role = result.userRole;
                     var userId = result.userID.ToString();
 
+                    // lưu infor vào cookie
                     Response.Cookies.Append("Cookie", token, new CookieOptions
                     {
                         HttpOnly = true,
@@ -169,25 +203,6 @@ namespace Front_end.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Signup()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Signup(User user)
-        {
-            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("https://localhost:7214/api/User/Register", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["SuccessMessage"] = "User registered successfully!";
-                return RedirectToAction("Login"); 
-            }
-            return View(user);
-        }
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()

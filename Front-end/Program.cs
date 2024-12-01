@@ -14,6 +14,7 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 
+// config xác thực cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
        .AddCookie(options =>
        {
@@ -21,6 +22,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
            options.LogoutPath = "/AuthMiddleware/Logout";
            options.ExpireTimeSpan = TimeSpan.FromHours(1);
        });
+
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

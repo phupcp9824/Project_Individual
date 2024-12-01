@@ -13,7 +13,7 @@ namespace Data.Model
 
         [StringLength(255, ErrorMessage = "Description must be under 256 characters")]
         public string? Description { get; set; }
-
+        
         public ICollection<ProductSize>? ProductSizes { get; set; }
 
     }
